@@ -64,6 +64,27 @@ __"block|mount|fstype|options|flags"__ requires you specify which part (listed i
 
 You may also use _ui_print "\<text\>"_ to write messages back to the recovery during the modification process, and _contains "\<string\>" "\<substring\>"_ to simplify string testing logic you might want in your script.
 
+=======
+## // Binary Inclusion ##
+
+The AK2 repo includes my latest static ARM builds of `mkbootimg`, `unpackbootimg`,`busybox`, `xz` and `lz4` by default to keep the basic package small. Builds for other architectures and optional binaries (see below) are available from my latest AIK-mobile and FlashIt packages, respectively, here:
+
+https://forum.xda-developers.com/showthread.php?t=2073775 (Android Image Kitchen thread)  
+https://forum.xda-developers.com/showthread.php?t=2239421 (Odds and Ends thread)
+
+Optional supported binaries which may be placed in /tools to enable built-in expanded functionality are as follows:
+* `mkbootfs` - for broken recoveries, or, booted flash support for a script or app via bind mounting to a /tmp directory
+* `flash_erase`, `nanddump`, `nandwrite` - MTD block device support for devices where the `dd` command is not sufficient
+* `pxa-unpackbootimg`, `pxa-mkbootimg` - Samsung/Marvell PXA1088/PXA1908 boot.img format variant support
+* `dumpimage`, `mkimage` - DENX U-Boot uImage format support
+* `unpackelf` - Sony ELF kernel.elf format support, repacking as AOSP standard boot.img for unlocked bootloaders
+* `mkmtkhdr` - MTK device boot image section headers support
+* `futility` + `chromeos` test keys directory - Google ChromeOS signature support
+* `BootSignature_Android.jar` + `avb` keys directory - Google Android Verified Boot (AVB) signature support
+* `blobpack` - Asus SignBlob signature support
+* `dhtbsign` - Samsung/Spreadtrum DHTB signature support
+* `rkcrc` - Rockchip KRNL ramdisk image support
+
 ## // Instructions ##
 
 1. Place zImage in the root (dtb should also go here for devices that require a custom one, both will fallback to the original if not included)
