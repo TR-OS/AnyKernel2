@@ -27,6 +27,11 @@ on property:persist.hwkeys.backlight=enabled
 on property:persist.hwkeys.backlight=disabled
     write /sys/class/leds/button-backlight/max_brightness 0
 
+# Input boost configuration
+write /sys/kernel/cpu_input_boost/ib_freqs "1228800 1324800"
+write /sys/kernel/cpu_input_boost/ib_duration_ms 1400
+write /sys/kernel/cpu_input_boost/enabled 1
+
 # Balance (default profile)
 on property:persist.spectrum.profile=0
     write /proc/sys/kernel/sched_boost 1
