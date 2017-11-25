@@ -6,8 +6,8 @@ on property:sys.boot_completed=1
     setprop persist.spectrum.kernel TR-Core
 
 # Input boost configuration
-write /sys/kernel/cpu_input_boost/ib_freqs "1228800 1324800"
-write /sys/kernel/cpu_input_boost/ib_duration_ms 1400
+write /sys/kernel/cpu_input_boost/ib_freqs "1036800 1228800"
+write /sys/kernel/cpu_input_boost/ib_duration_ms 300
 write /sys/kernel/cpu_input_boost/enabled 1
 
 # MSM Thermal thresholds
@@ -35,8 +35,8 @@ on property:persist.hwkeys.backlight=disabled
 # Balance (default profile)
 on property:persist.spectrum.profile=0
     write /proc/sys/kernel/sched_boost 1
-    write /sys/kernel/cpu_input_boost/ib_freqs "1228800 1324800"
-    write /sys/kernel/cpu_input_boost/ib_duration_ms 1400
+    write /sys/kernel/cpu_input_boost/ib_freqs "1036800 1228800"
+    write /sys/kernel/cpu_input_boost/ib_duration_ms 300
     write /sys/kernel/cpu_input_boost/enabled 1
     write /sys/class/kgsl/kgsl-3d0/default_pwrlevel 7
     write /sys/class/kgsl/kgsl-3d0/devfreq/governor msm-adreno-tz
