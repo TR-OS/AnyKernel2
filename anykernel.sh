@@ -35,6 +35,11 @@ case "$android_ver" in
   "6.0"|"6.0.1") compatibility_string="your version is unsupported, expect no support from the kernel developer!";;
   "7.0"|"7.1"|"7.1.1"|"7.1.2"|"8.0.0"|"8.1") compatibility_string="your version is supported!";;
 esac;
+## AnyKernel file attributes
+# set permissions/ownership for included ramdisk files
+chmod -R 750 $ramdisk/*;
+chmod 644 $ramdisk/sbin/media_profiles.xml;
+chown -R root:root $ramdisk/*;
 
 ui_print "Running Android $android_ver, $compatibility_string";
 
