@@ -3,7 +3,7 @@
 
 ## AnyKernel setup
 properties() {
-kernel.string=Radioactive Kernel
+kernel.string=TR Core
 do.devicecheck=1
 do.modules=0
 do.cleanup=1
@@ -41,7 +41,7 @@ ui_print "Running Android $android_ver, $compatibility_string";
 dump_boot;
 
 # begin ramdisk changes
-insert_line init.qcom.rc "init.radioactive.rc" after "import init.target.rc" "import /init.radioactive.rc"
+insert_line init.qcom.rc "init.tr-core.rc" after "import init.target.rc" "import /init.tr-core.rc"
 
 # end ramdisk changes
 
