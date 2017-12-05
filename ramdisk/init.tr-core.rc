@@ -5,17 +5,52 @@ on property:sys.boot_completed=1
     setprop spectrum.support 1
     setprop persist.spectrum.kernel TR-Core
 
-# MSM Thermal thresholds
-write  /sys/module/msm_thermal/parameters/enabled Y
-write  /sys/module/msm_thermal/core_control/enabled 0
-write  /sys/module/msm_thermal/parameters/temp_threshold 50
-write  /sys/module/msm_thermal/parameters/core_limit_temp_degC 60
+# Input boost configuration
+write /sys/kernel/cpu_input_boost/ib_freqs "1228800 1324800"
+write /sys/kernel/cpu_input_boost/ib_duration_ms 1400
+write /sys/kernel/cpu_input_boost/enabled 1
+
+# Set light thermal restrictions while optimizing apps
+# [throttle_freq_LITTLE, throttle_freq_big, throttle_temp, unthrottle_temp]
+write /sys/kernel/msm_thermal/zone0 "1228800 1632000 46 44"
+write /sys/kernel/msm_thermal/zone1 "1228800 1555200 50 47"
+write /sys/kernel/msm_thermal/zone2 "1036800 1248000 55 53"
+write /sys/kernel/msm_thermal/zone3 "729600 729600 65 63"
+write /sys/kernel/msm_thermal/enabled 1
+
+# Set thermal restrictions
+write /sys/kernel/msm_thermal/enabled 0
+write /sys/kernel/msm_thermal/zone0 "1401600 1785600 40 38"
+write /sys/kernel/msm_thermal/zone1 "1324800 1555200 41 40"
+write /sys/kernel/msm_thermal/zone2 "1228800 1478400 42 41"
+write /sys/kernel/msm_thermal/zone3 "1228800 1401600 43 42"
+write /sys/kernel/msm_thermal/zone4 "1190400 1324800 44 43"
+write /sys/kernel/msm_thermal/zone5 "1190400 1248000 46 44"
+write /sys/kernel/msm_thermal/zone6 "1113600 1190400 48 46"
+write /sys/kernel/msm_thermal/zone7 "1036800 940800 53 50"
+write /sys/kernel/msm_thermal/zone8 "729600 729600 65 60"
+write /sys/kernel/msm_thermal/sampling_ms 8000
+write /sys/kernel/msm_thermal/enabled 1
+
+# Set normal thermal restrictions
+write /sys/kernel/msm_thermal/enabled 0
+write /sys/kernel/msm_thermal/zone0 "1401600 1785600 40 38"
+write /sys/kernel/msm_thermal/zone1 "1324800 1555200 41 40"
+write /sys/kernel/msm_thermal/zone2 "1228800 1478400 42 41"
+write /sys/kernel/msm_thermal/zone3 "1228800 1401600 43 42"
+write /sys/kernel/msm_thermal/zone4 "1190400 1324800 44 43"
+write /sys/kernel/msm_thermal/zone5 "1190400 1248000 46 44"
+write /sys/kernel/msm_thermal/zone6 "1113600 1190400 48 46"
+write /sys/kernel/msm_thermal/zone7 "1036800 940800 53 50"
+write /sys/kernel/msm_thermal/zone8 "729600 729600 65 60"
+write /sys/kernel/msm_thermal/sampling_ms 8000
+write /sys/kernel/msm_thermal/enabled 1
 
 # Tune the sda block
-write /sys/block/dm-0/queue/scheduler "bfq"
-write /sys/block/dm-1/queue/scheduler "bfq"
-write /sys/block/sda/queue/scheduler "bfq"
-write /sys/block/sde/queue/scheduler "bfq"
+write /sys/block/dm-0/queue/scheduler "cfq"
+write /sys/block/dm-1/queue/scheduler "cfq"
+write /sys/block/sda/queue/scheduler "cfq"
+write /sys/block/sde/queue/scheduler "cfq"
 write  /sys/block/sda/queue/read_ahead_kb 128
 write  /sys/block/sda/queue/iosched/back_seek_penalty 4
 write  /sys/block/sda/queue/iosched/low_latency 0
@@ -27,23 +62,29 @@ on property:persist.hwkeys.backlight=enabled
 on property:persist.hwkeys.backlight=disabled
     write /sys/class/leds/button-backlight/max_brightness 0
 
+# Set default freqs
+write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 307200
+write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 1516800
+write /sys/devices/system/cpu/cpu2/cpufreq/scaling_min_freq 307200
+write /sys/devices/system/cpu/cpu2/cpufreq/scaling_max_freq 2342400
+
 # Balance (default profile)
 on property:persist.spectrum.profile=0
     write /proc/sys/kernel/sched_boost 1
-    write /sys/module/cpu_boost/parameters/input_boost_freq "0:1036800 2:0"
-    write /sys/module/cpu_boost/parameters/input_boost_ms 100
-	write /sys/module/cpu_boost/parameters/input_boost_enabled 1
+    write /sys/kernel/cpu_input_boost/ib_freqs "1228800 1324800"
+    write /sys/kernel/cpu_input_boost/ib_duration_ms 1400
+    write /sys/kernel/cpu_input_boost/enabled 1
     write /sys/class/kgsl/kgsl-3d0/default_pwrlevel 7
     write /sys/class/kgsl/kgsl-3d0/devfreq/governor msm-adreno-tz
     write /sys/class/kgsl/kgsl-3d0/devfreq/adrenoboost 0
-    write /sys/block/dm-0/queue/scheduler "bfq"
-    write /sys/block/dm-1/queue/scheduler "bfq"
-    write /sys/block/sda/queue/scheduler "bfq"
-    write /sys/block/sde/queue/scheduler "bfq"
-    write /sys/block/dm-0/queue/read_ahead_kb 512
-    write /sys/block/dm-1/queue/read_ahead_kb 512
-    write /sys/block/sda/queue/read_ahead_kb 512
-    write /sys/block/sde/queue/read_ahead_kb 512
+    write /sys/block/dm-0/queue/scheduler "cfq"
+    write /sys/block/dm-1/queue/scheduler "cfq"
+    write /sys/block/sda/queue/scheduler "cfq"
+    write /sys/block/sde/queue/scheduler "cfq"
+    write /sys/block/dm-0/queue/read_ahead_kb 128
+    write /sys/block/dm-1/queue/read_ahead_kb 128
+    write /sys/block/sda/queue/read_ahead_kb 128
+    write /sys/block/sde/queue/read_ahead_kb 128
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor "interactive"
     write /sys/devices/system/cpu/cpu0/cpufreq/interactive/use_sched_load 1
     write /sys/devices/system/cpu/cpu0/cpufreq/interactive/use_migration_notif 1
@@ -82,14 +123,18 @@ on property:persist.spectrum.profile=0
     write /sys/devices/system/cpu/cpu2/cpufreq/scaling_max_freq 2150400
     write /sys/module/adreno_idler/parameters/adreno_idler_active Y
     write /proc/sys/net/ipv4/tcp_congestion_control "westwood"
-    write /sys/module/mdss_fb/parameters/backlight_dimmer 1   
+    write /sys/module/mdss_fb/parameters/backlight_dimmer 1 
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 307200
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 1516800
+    write /sys/devices/system/cpu/cpu2/cpufreq/scaling_min_freq 307200
+    write /sys/devices/system/cpu/cpu2/cpufreq/scaling_max_freq 2342400  
   
 # Performance 
 on property:persist.spectrum.profile=1
     write /proc/sys/kernel/sched_boost 1
-    write /sys/module/cpu_boost/parameters/input_boost_freq "0:1286400 2:1286400"
-    write /sys/module/cpu_boost/parameters/input_boost_ms 500
-	write /sys/module/cpu_boost/parameters/input_boost_enabled 1
+    write /sys/kernel/cpu_input_boost/ib_freqs "1228800 1324800"
+    write /sys/kernel/cpu_input_boost/ib_duration_ms 1400
+    write /sys/kernel/cpu_input_boost/enabled 1
     write /sys/class/kgsl/kgsl-3d0/default_pwrlevel 6
     write /sys/class/kgsl/kgsl-3d0/devfreq/governor msm-adreno-tz
     write /sys/class/kgsl/kgsl-3d0/devfreq/adrenoboost 0
@@ -130,14 +175,17 @@ on property:persist.spectrum.profile=1
     write /sys/devices/system/cpu/cpu2/cpufreq/scaling_min_freq 307200
     write /sys/devices/system/cpu/cpu2/cpufreq/scaling_max_freq 2342400
     write /sys/module/adreno_idler/parameters/adreno_idler_active N
-   
-   
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 307200
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 1516800
+    write /sys/devices/system/cpu/cpu2/cpufreq/scaling_min_freq 307200
+    write /sys/devices/system/cpu/cpu2/cpufreq/scaling_max_freq 2342400  
+     
 # Battery
 on property:persist.spectrum.profile=2
     write /proc/sys/kernel/sched_boost 0
-    write /sys/module/cpu_boost/parameters/input_boost_freq "0:1036800 2:1036800"
-    write /sys/module/cpu_boost/parameters/input_boost_ms 500
-	write /sys/module/cpu_boost/parameters/input_boost_enabled 0
+    write /sys/kernel/cpu_input_boost/ib_freqs "1228800 1324800"
+    write /sys/kernel/cpu_input_boost/ib_duration_ms 1400
+    write /sys/kernel/cpu_input_boost/enabled 0
     write /sys/class/kgsl/kgsl-3d0/default_pwrlevel 7
     write /sys/class/kgsl/kgsl-3d0/devfreq/governor powersave
     write /sys/class/kgsl/kgsl-3d0/devfreq/adrenoboost 0
@@ -149,21 +197,25 @@ on property:persist.spectrum.profile=2
     write /sys/block/dm-1/queue/read_ahead_kb 2048
     write /sys/block/sda/queue/read_ahead_kb 2048
     write /sys/block/sde/queue/read_ahead_kb 2048
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor "dyninteractive"    
-    write /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor "dyninteractive"
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor "interactive"    
+    write /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor "interactive"
     write /sys/module/adreno_idler/parameters/adreno_idler_active Y
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 307200
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 1056000
     write /sys/devices/system/cpu/cpu2/cpufreq/scaling_min_freq 307200
     write /sys/devices/system/cpu/cpu2/cpufreq/scaling_max_freq 1056000
     write /sys/module/adreno_idler/parameters/adreno_idler_active Y
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 307200
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 1516800
+    write /sys/devices/system/cpu/cpu2/cpufreq/scaling_min_freq 307200
+    write /sys/devices/system/cpu/cpu2/cpufreq/scaling_max_freq 2342400  
 
 # Gaming
 on property:persist.spectrum.profile=3
     write /proc/sys/kernel/sched_boost 1
-    write /sys/module/cpu_boost/parameters/input_boost_freq "0:1286400 2:1286400"
-    write /sys/module/cpu_boost/parameters/input_boost_ms 500
-	write /sys/module/cpu_boost/parameters/input_boost_enabled 1
+    write /sys/kernel/cpu_input_boost/ib_freqs "1228800 1324800"
+    write /sys/kernel/cpu_input_boost/ib_duration_ms 1400
+    write /sys/kernel/cpu_input_boost/enabled 1
     write /sys/class/kgsl/kgsl-3d0/default_pwrlevel 6
     write /sys/class/kgsl/kgsl-3d0/devfreq/governor msm-adreno-tz
     write /sys/class/kgsl/kgsl-3d0/devfreq/adrenoboost 3
@@ -204,3 +256,7 @@ on property:persist.spectrum.profile=3
     write /sys/devices/system/cpu/cpu2/cpufreq/scaling_min_freq 307200
     write /sys/devices/system/cpu/cpu2/cpufreq/scaling_max_freq 2342400
     write /sys/module/adreno_idler/parameters/adreno_idler_active N
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 307200
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 1516800
+    write /sys/devices/system/cpu/cpu2/cpufreq/scaling_min_freq 307200
+    write /sys/devices/system/cpu/cpu2/cpufreq/scaling_max_freq 2342400  
